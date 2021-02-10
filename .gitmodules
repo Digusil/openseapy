@@ -1,0 +1,3 @@
+[submodule "eventsearch"]
+	path = eventsearch
+	url = ssh://gitpi@finchsnet.pircherfoto.de:50022/git/ipat/wec/eventsearch.git

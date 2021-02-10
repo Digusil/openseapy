@@ -29,5 +29,8 @@ CHANGE LOG:
         dataset class with sequence generator for tensorlfow
         resampling data in sequence generator
 
+    - 0.1.2
+        divide code in submodules
+
 '''
-__version__ = '0.1.1'
+__version__ = '0.1.2'

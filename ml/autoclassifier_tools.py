@@ -1,5 +1,5 @@
 import numpy as np
-from snaa.utils import Smoother, assign_elements
+from eventsearch.utils import Smoother, assign_elements
 
 
 def arrange_data(data, code_dict):
