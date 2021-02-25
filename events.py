@@ -2,6 +2,7 @@ import numpy as np
 from cached_property import cached_property
 from scipy.optimize import minimize
 
+from eventsearch.signals import Smoother
 from eventsearch.events import Event, EventDataFrame
 from eventsearch.event_utils import analyse_capacitor_behavior
 
