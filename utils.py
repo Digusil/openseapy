@@ -1,1 +1,0 @@
-from eventsearch.utils import *
