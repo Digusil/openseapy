@@ -1,1 +1,2 @@
-from .eventsearch.signals import *
+# load elements from eventsearch package
+from eventsearch.signals import *

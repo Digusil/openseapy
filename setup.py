@@ -35,7 +35,8 @@ requirements = [
     'scipy>=0.17',
     'pandas',
     'cached-property',
-    'h5py'
+    'h5py',
+    'eventsearch'
 ]
 
 def get_readme() -> str:
@@ -61,7 +62,7 @@ setup(
     url='???',  # todo: set package url
     license=__license__,
     keywords='???',  # todo: add keywords
-    packages=['snaa', 'eventsearch'],
+    packages=['snaa'],
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Science/Research",

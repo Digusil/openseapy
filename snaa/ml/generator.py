@@ -25,7 +25,31 @@ class SNAADataset(CoreDataset):
             target_sample_length=None,
             **kwargs
     ):
+        """
+        Etended Database class for SNAA machine learning.
 
+        Parameters
+        ----------
+        hdf_file: str
+            file / path string to the HDF5 database
+        feature_length: int
+            Feature lenght for machine learning.
+        target_length: int
+            Traget lenght for machine learning.
+        shift: int, optional
+            Feature und target data can be shifted. Default 0.
+        feature_sample_length: int or None, optional
+            For custom feature lenght, the data will be resapled by scipy.signal.resample_poly. If None, the data wont
+            be resampled. Default None.
+        target_sample_length: int or None, optional
+            For custom target lenght, the data will be resapled by scipy.signal.resample_poly. If None, the data wont
+            be resampled. Default None.
+        step: int, optional
+            Step size for data return. Default 1.
+        smoother: Smoother or None
+            Smoother for smoothing the data before applying the step. If None, the data will be not smoothed. Default
+            None.
+        """
         self._position_len = -1
 
         self._feature_length = feature_length
@@ -46,30 +70,73 @@ class SNAADataset(CoreDataset):
 
     @property
     def feature_length(self):
+        """
+        Returns
+        -------
+        feature length: int
+        """
         return self._feature_length
 
     @property
     def target_length(self):
+        """
+        Returns
+        -------
+        target length: int
+        """
         return self._target_length
 
     @property
     def feature_sample_length(self):
+        """
+        Returns
+        -------
+        resampled feature lenght: int
+        """
         return self._feature_sample_length
 
     @property
     def target_sample_length(self):
+        """
+        Returns
+        -------
+        resampled target lenght: int
+        """
         return self._target_sample_length
 
     @property
     def shift(self):
+        """
+        Returns
+        -------
+        target - feature shift: int
+        """
         return self._shift
 
     def _calc_max_number(self, trace_name):
+        """
+        Calculate number of sample windows in trace.
+
+        Parameters
+        ----------
+        trace_name: str
+
+        Returns
+        -------
+        number of samples: int
+        """
         return len(self._get_data(trace_name)) \
                - np.max([self.feature_sample_length, self.shift + self.target_sample_length])
 
     @cached_property
     def position_dict(self):
+        """
+        Generate position dicitonary for traces.
+
+        Returns
+        -------
+        position dictionary: dict
+        """
         counter = 0
 
         position_dict = {}
@@ -86,12 +153,29 @@ class SNAADataset(CoreDataset):
 
     @property
     def position_len(self):
+        """
+        Returns
+        -------
+        number of possible samples over all traces: int
+        """
         if self._position_len < 0:
             self.position_dict
 
         return self._position_len
 
     def _reverse_position_dict(self, sample_id):
+        """
+        Reverse look up for samples to get corresponding trace.
+
+        Parameters
+        ----------
+        sample_id: int
+            ID of the sample.
+
+        Returns
+        -------
+        trace name: str
+        """
         for trace in self.position_dict:
             if sample_id < self.position_dict[trace][1]:
                 break
@@ -99,17 +183,31 @@ class SNAADataset(CoreDataset):
         return trace, sample_id - self.position_dict[trace][0]
 
     def _random_positions(self, sample_number):
+        """
+        Generate random sample list.
+
+        Parameters
+        ----------
+        sample_number: int
+            Number of samples.
+
+        Returns
+        -------
+        list of sample ids: list
+        """
         return np.random.choice(self.position_len, sample_number, replace=False)
 
     def sequence_generator(self, sample_number=None, scaler=lambda x, y: [x-np.mean(x), y-np.mean(x)]):
         """
-        old version
+        Generator function for tfdata.
 
-        todo:
-            - implement n choices to reduce the amount of needed memory
-            - loading from pandas hdf file
+        Parameters
+        ----------
+        sample_number: int
+            Number of samples.
+        scaler: callable, optional
+            Scaling for feature and target (return as tuple). Default lambda x, y: [x-np.mean(x), y-np.mean(x)].
         """
-
         if isinstance(sample_number, list) or isinstance(sample_number, Iterable):
             position_list = sample_number
         elif sample_number is not None and sample_number < self.position_len:
@@ -185,6 +283,7 @@ class SNAADataset(CoreDataset):
         return container
 
 
+# todo: move to unittest
 if __name__ == '__main__':
     test = SNAADataset('_data/data.h5', target_length=200, feature_sample_length=200)
 

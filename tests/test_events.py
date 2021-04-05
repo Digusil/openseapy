@@ -2,8 +2,7 @@ import unittest
 
 import numpy as np
 
-from eventsearch.signals import SingleSignal
-from snaa.events import SpontaneousActivityEvent
+from snaa.signals import SingleSignal
 
 
 class SpontaneousActivityEvent(unittest.TestCase):

@@ -1,1 +1,2 @@
-from .eventsearch.utils import *
+# load elements from eventsearch package
+from eventsearch.utils import *
