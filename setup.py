@@ -25,19 +25,20 @@ with open("snaa/version.py") as fp:
 __author__ = 'Thomas Pircher'
 __version__ = version['__version__']
 __copyright__ = '2021, FAU-iPAT'
-__license__ = 'Apache-2.0'
+__license__ = 'Apache-2.0'  # todo: checck if this license is ok
 __maintainer__ = 'Thomas Pircher'
 __email__ = 'thomas.pircher@fau.de'
 __status__ = 'Development'
 
 requirements = [
-    'numpy>=1.13.1',
-    'scipy>=0.17',
-    'pandas',
-    'cached-property',
-    'h5py',
+    'numpy>=1.20.1',
+    'scipy>=1.6.0',
+    'pandas>=1.2.1',
+    'cached-property>=1.5.2',
+    'h5py>=3.1.0',
     'eventsearch'
 ]
+
 
 def get_readme() -> str:
     """
@@ -53,7 +54,7 @@ def get_readme() -> str:
 #   Call setup method to define this package
 # ------------------------------------------------------------------------------
 setup(
-    name='snaa',  # todo: add actual package name
+    name='snaa',
     version=__version__,
     author=__author__,
     author_email=__email__,
@@ -69,11 +70,13 @@ setup(
         "License :: OSI Approved :: Apache Software License",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
         "Topic :: Scientific/Engineering :: Information Analysis",
         "Topic :: Scientific/Engineering :: Mathematics",
     ],
-    python_requires='>=3.6',
+    python_requires='>=3.7',
     install_requires=requirements,
     zip_safe=False
 )

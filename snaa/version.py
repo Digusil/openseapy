@@ -2,7 +2,7 @@
 project:    snaa
 filename:	version
 author:		pi
-date:		2020-03-06
+date:		2020-04-06
 version:	
 
 description:
@@ -30,7 +30,8 @@ CHANGE LOG:
         resampling data in sequence generator
 
     - 0.1.2
-        divide code in submodules
+        divide code in packages
+        add docstrings and untitests
 
 '''
 __version__ = '0.1.2'

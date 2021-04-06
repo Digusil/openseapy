@@ -125,8 +125,8 @@ class SNAADataset(CoreDataset):
         -------
         number of samples: int
         """
-        return len(self._get_data(trace_name)) \
-               - np.max([self.feature_sample_length, self.shift + self.target_sample_length])
+        return len(self._get_data(trace_name)) - np.max(
+            [self.feature_sample_length, self.shift + self.target_sample_length])
 
     @cached_property
     def position_dict(self):
@@ -143,7 +143,7 @@ class SNAADataset(CoreDataset):
 
         for trace in self.trace_df.index:
             n = self._calc_max_number(trace)
-            position_dict.update({trace: [counter, counter+n]})
+            position_dict.update({trace: [counter, counter + n]})
 
             counter += n
 
@@ -197,7 +197,7 @@ class SNAADataset(CoreDataset):
         """
         return np.random.choice(self.position_len, sample_number, replace=False)
 
-    def sequence_generator(self, sample_number=None, scaler=lambda x, y: [x-np.mean(x), y-np.mean(x)]):
+    def sequence_generator(self, sample_number=None, scaler=lambda x, y: [x - np.mean(x), y - np.mean(x)]):
         """
         Generator function for tfdata.
 
@@ -239,8 +239,8 @@ class SNAADataset(CoreDataset):
                 data /= scale
 
             features = copy(data.iloc[idn:idn + self.feature_sample_length].values)
-            #feature_offset = np.mean(features)
-            #features -= feature_offset
+            # feature_offset = np.mean(features)
+            # features -= feature_offset
             # targets /= np.std(targets)
 
             targets = copy(data.iloc[idn + self.shift:idn + self.shift + self.target_sample_length].values)
@@ -273,7 +273,7 @@ class SNAADataset(CoreDataset):
                    tf.convert_to_tensor(targets, dtype=tf.float32)
                    )
 
-            #yield (features, targets, (offset, scale, feature_offset, target_offset))
+            # yield (features, targets, (offset, scale, feature_offset, target_offset))
 
     @classmethod
     def build(cls, *args, **kwargs):
@@ -281,19 +281,3 @@ class SNAADataset(CoreDataset):
         container.position_dict
 
         return container
-
-
-# todo: move to unittest
-if __name__ == '__main__':
-    test = SNAADataset('_data/data.h5', target_length=200, feature_sample_length=200)
-
-    print(test.position_dict)
-    print(test._reverse_position_dict(249989))
-    print(test._reverse_position_dict(test.position_len - 1))
-
-    for features, targets, metadata in list(test.sequence_generator(5)):
-        plt.plot(features)
-        plt.plot(targets)
-        print(metadata)
-
-    plt.show()

@@ -96,7 +96,8 @@ class SpontaneousActivityEvent(Event):
         """
         return ymax - (ymax - self.simplified_peak_end_value) * np.exp(-(t_local - self.simplified_peak_end_time) / tau)
 
-    def approximate_capacitor_behavior(self, cutoff: float = 0.3, iterations: int = 5, smoother: Smoother = Smoother(31), **kwargs):
+    def approximate_capacitor_behavior(self, cutoff: float = 0.3, iterations: int = 5,
+                                       smoother: Smoother = Smoother(31), **kwargs):
         """
         Simple capacitor behavior analysis based on filtering and linear fitting in the phase domain. Only usable when
         the data is clean. Noisy or uncertain behavior have to be fitted with "refine_capacitor_behavior".
@@ -110,6 +111,9 @@ class SpontaneousActivityEvent(Event):
         smoother: Smoother, optional
             Smoother for smoothing the data. Default Smoother(window_len=31, window='hann').
         """
+        def loss(par):
+            return np.mean((self._capacitor_hypothesis(t, *par) - y) ** 2)
+
         self.del_cache()
         ymax, tau, alpha = analyse_capacitor_behavior(self, cutoff=cutoff, iterations=iterations, **kwargs)
 
@@ -119,8 +123,6 @@ class SpontaneousActivityEvent(Event):
                 smoother.window_len = len(t) - 1
 
             y = smoother.smooth(self.y_local[self.t_local >= self.peak_time])
-
-            loss = lambda par: np.mean((self._capacitor_hypothesis(t, *par) - y) ** 2)
 
             self.simple_cap_ymax = ymax
             self.simple_cap_tau = tau
@@ -147,8 +149,8 @@ class SpontaneousActivityEvent(Event):
         -------
         data values: ndarray
         """
-        ymax = self[type+'_cap_ymax']
-        tau = self[type+'_cap_tau']
+        ymax = self[type + '_cap_ymax']
+        tau = self[type + '_cap_tau']
 
         if ymax is np.NaN or tau is np.NaN:
             return np.NaN
@@ -164,16 +166,17 @@ class SpontaneousActivityEvent(Event):
         smoother: Smoother, optional
             Smoother for smoothing the data. Default no smoothing.
         """
+        def loss(par):
+            return np.nanmean((self._capacitor_hypothesis(t, *par) - y) ** 2)
+
         self.del_cache()
-        #ymax = self.simple_cap_ymax if self.simple_cap_ymax is not np.NaN else np.max(self.y)
+        # ymax = self.simple_cap_ymax if self.simple_cap_ymax is not np.NaN else np.max(self.y)
         ymax = 10
-        #tau = self.simple_cap_tau if self.simple_cap_tau is not np.NaN else 0
+        # tau = self.simple_cap_tau if self.simple_cap_tau is not np.NaN else 0
         tau = 1e5
 
         t = self.t_local[self.t_local >= self.simplified_peak_end_time]
         y = smoother.smooth(self.y_local[self.t_local >= self.simplified_peak_end_time])
-
-        loss = lambda par: np.nanmean((self._capacitor_hypothesis(t, *par) - y) ** 2)
 
         res = minimize(loss, x0=[ymax, tau], method='Nelder-Mead', options={'max_iter': 10e3})
 
