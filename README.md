@@ -4,7 +4,7 @@
 Currently, the package is only available on github. To run the **SNAA** package, the [**eventsearch**](https://github.com/digusil/eventsearch) is required. This pack
 ```shell
 git clone https://github.com/digusil/eventsearch
-cd eventsearch && pyhton setup.py
+cd eventsearch && pyhton setup.py install
 ```
 
 After installing the **eventsearch** package, you can install the **SNAA** package.
