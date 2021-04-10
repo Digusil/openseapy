@@ -4,14 +4,14 @@ from eventsearch.utils import Smoother, assign_elements
 
 def arrange_data(data, code_dict):
     """
-    Convert ml lables with dictionary.
+    Convert ml labels with dictionary.
 
     Parameters
     ----------
     data: ndarray
-        Ml label data.
+        ml label data
     code_dict: dict
-        Dicitonary to convert the labels.
+        dictionary to convert the labels
 
     Returns
     -------
@@ -27,15 +27,15 @@ def analyse_autoclassifier(data, max_length=250, min_length=30, noise_level=0.25
     Parameters
     ----------
     data: ndarray
-        Ml label data.
+        ml label data
     max_length: int, optional
-        Maximum event lenght.
+        maximum event length
     min_length: int, optional
-        Minimum event lenght.
+        minimum event length
     noise_level: float, optional
-        Maximum noise proportion for valid event. Default 0.25.
+        Maximum noise proportion for valid event. Default is 0.25.
     debug_mode: bool, optional
-        If True, additional values will be returned. Defaul False.
+        Is True, if additional values will be returned. Default is False.
 
     Returns
     -------

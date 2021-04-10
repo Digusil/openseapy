@@ -1,4 +1,4 @@
-**SNAA** is a python package for detection spontanous events in time series of patchclam signals.
+**SNAA** is a python package for the detection of spontaneous events in time series of patchclamp signals.
 
 ## Installation
 Currently, the package is only available on github. To run the **SNAA** package, the [**eventsearch**](https://github.com/digusil/eventsearch) is required. This pack
@@ -20,7 +20,7 @@ cd ./test && python -m unittest
 ```
 
 ## Acknowledgement
-This software was developted on the [institute for process mashinary](https://www.ipat.tf.fau.eu) in cooperation with the [institute for animal physiology](https://www.tierphys.nat.fau.de). 
+This software was developed on the [institute for process machinery](https://www.ipat.tf.fau.eu) in cooperation with the [institute for animal physiology](https://www.tierphys.nat.fau.de). 
 
 ## License
 [Apache License 2.0](LICENSE.txt)

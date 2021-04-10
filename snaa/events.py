@@ -12,7 +12,7 @@ class SpontaneousActivityEvent(Event):
 
     def __init__(self, *args, **kwargs):
         """
-        Spontaneous activity event class. This is an extension of the eventsearch.Event class to handle biological
+        Spontaneous activity event class. This is an extension of the eventsearch. Event class to handle biological
         events.
 
         Parameters
@@ -20,7 +20,7 @@ class SpontaneousActivityEvent(Event):
         data: SingleSignal
             signal data
         t_start: float
-            strat time
+            start time
         t_end: float
             end time
         t_reference: float
@@ -61,7 +61,7 @@ class SpontaneousActivityEvent(Event):
         """
         Returns
         -------
-        time of the local maxima before the peak: float
+        time of the local maximum before the peak: float
         """
         mask = self.t_local <= self.peak_time
         peak_id = np.argmax(self.y_local[mask])
@@ -72,19 +72,19 @@ class SpontaneousActivityEvent(Event):
         """
         Returns
         -------
-        value of the local maxima before the peak: float
+        value of the local maximum before the peak: float
         """
         mask = self.t_local <= self.peak_time
         return np.max(self.y_local[mask])
 
     def _capacitor_hypothesis(self, t_local, ymax, tau):
         """
-        Hypothesis for capacitor behavior fitting.
+        hypothesis for capacitor behavior fitting
 
         Parameters
         ----------
         t_local: ndarray
-            Local evaluation time points.
+            local evaluation time points
         ymax: float
             settling value
         tau: float
@@ -105,11 +105,11 @@ class SpontaneousActivityEvent(Event):
         Parameters
         ----------
         cutoff: float, optional
-            Cutoff value for value filtering. Default 0.3.
-        iterations; int, iptional
-            Number of iterations. Default 5.
+            Cutoff value for value filtering. Default is 0.3.
+        iterations; int, optional
+            Number of iterations. Default is 5.
         smoother: Smoother, optional
-            Smoother for smoothing the data. Default Smoother(window_len=31, window='hann').
+            Smoother for smoothing the data. Default is Smoother(window_len=31, window='hann').
         """
         def loss(par):
             return np.mean((self._capacitor_hypothesis(t, *par) - y) ** 2)
@@ -141,7 +141,7 @@ class SpontaneousActivityEvent(Event):
         Parameters
         ----------
         t_local: ndarray
-            Local evaluation time points.
+            local evaluation time points
         type: {'simple', 'fitted'}, optional
             Choose method. Default 'simple'.
 
@@ -159,12 +159,12 @@ class SpontaneousActivityEvent(Event):
 
     def fit_capacitor_behavior(self, smoother: Smoother = Smoother(11, signal_smoothing=False), **kwargs):
         """
-        Fit capaictor behavior hypothesis by minimizing L2 distance.
+        Fit capacitor behavior hypothesis by minimizing L2 distance.
 
         Parameters
         ----------
         smoother: Smoother, optional
-            Smoother for smoothing the data. Default no smoothing.
+            Smoother for smoothing the data. Default is no smoothing.
         """
         def loss(par):
             return np.nanmean((self._capacitor_hypothesis(t, *par) - y) ** 2)
@@ -199,7 +199,7 @@ class SpontaneousActivityEvent(Event):
         """
         Returns
         -------
-        mean slope of event rising by liearizing: float
+        mean slope of event rising by linearizing: float
         """
         return (self.peak_value - self.start_value) / (self.peak_time - self.start_time)
 

@@ -26,29 +26,29 @@ class SNAADataset(CoreDataset):
             **kwargs
     ):
         """
-        Etended Database class for SNAA machine learning.
+        extended database class for SNAA machine learning
 
         Parameters
         ----------
         hdf_file: str
             file / path string to the HDF5 database
         feature_length: int
-            Feature lenght for machine learning.
+            feature length for machine learning
         target_length: int
-            Traget lenght for machine learning.
+            target length for machine learning
         shift: int, optional
-            Feature und target data can be shifted. Default 0.
+            Feature und target data can be shifted. Default is 0.
         feature_sample_length: int or None, optional
-            For custom feature lenght, the data will be resapled by scipy.signal.resample_poly. If None, the data wont
-            be resampled. Default None.
+            For custom feature length, the data will be resampled by scipy.signal.resample_poly. If None, the data wont
+            be resampled. Default is None.
         target_sample_length: int or None, optional
-            For custom target lenght, the data will be resapled by scipy.signal.resample_poly. If None, the data wont
-            be resampled. Default None.
+            For custom target length, the data will be resampled by scipy.signal.resample_poly. If None, the data wont
+            be resampled. Default is None.
         step: int, optional
-            Step size for data return. Default 1.
+            Step size for data return. Default is 1.
         smoother: Smoother or None
             Smoother for smoothing the data before applying the step. If None, the data will be not smoothed. Default
-            None.
+            is None.
         """
         self._position_len = -1
 
@@ -91,7 +91,7 @@ class SNAADataset(CoreDataset):
         """
         Returns
         -------
-        resampled feature lenght: int
+        resampled feature length: int
         """
         return self._feature_sample_length
 
@@ -100,7 +100,7 @@ class SNAADataset(CoreDataset):
         """
         Returns
         -------
-        resampled target lenght: int
+        resampled target length: int
         """
         return self._target_sample_length
 
@@ -131,7 +131,7 @@ class SNAADataset(CoreDataset):
     @cached_property
     def position_dict(self):
         """
-        Generate position dicitonary for traces.
+        Generate position dictionary for traces.
 
         Returns
         -------
@@ -189,7 +189,7 @@ class SNAADataset(CoreDataset):
         Parameters
         ----------
         sample_number: int
-            Number of samples.
+            number of samples
 
         Returns
         -------
@@ -206,7 +206,7 @@ class SNAADataset(CoreDataset):
         sample_number: int
             Number of samples.
         scaler: callable, optional
-            Scaling for feature and target (return as tuple). Default lambda x, y: [x-np.mean(x), y-np.mean(x)].
+            Scaling for feature and target (return as tuple). Default is lambda x, y: [x-np.mean(x), y-np.mean(x)].
         """
         if isinstance(sample_number, list) or isinstance(sample_number, Iterable):
             position_list = sample_number

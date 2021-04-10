@@ -12,10 +12,10 @@ class SNAADataset:
         hdf_file: str
             file / path string to the HDF5 database
         step: int, optional
-            Step size for data return. Default 1.
+            Step size for data return. Default is 1.
         smoother: Smoother or None
             Smoother for smoothing the data before applying the step. If None, the data will be not smoothed. Default
-            None.
+            is None.
         """
         self._file = hdf_file
         self._step = step
@@ -37,7 +37,7 @@ class SNAADataset:
         """
         Returns
         -------
-        Step size for data return.
+        step size for data return
         """
         return self._step
 
@@ -83,9 +83,9 @@ class SNAADataset:
         Parameters
         ----------
         primary_name: str
-            Primary name of the trace.
+            primary name of the trace
         trace_id: int
-            Id of the trace.
+            id of the trace
 
         Returns
         -------
@@ -95,12 +95,12 @@ class SNAADataset:
 
     def _get_data(self, trace_name):
         """
-        Acces data by trace name.
+        Access data by trace name.
 
         Parameters
         ----------
         trace_name: str
-            name of the trace.
+            name of the trace
 
         Returns
         -------
@@ -129,7 +129,7 @@ class SNAADataset:
         name: str
             Primary name
         commit: bool, optional
-            If True, the changes will be commited. Default True.
+            If True, the changes will be committed. Default is True.
         kwargs:
             Additional attributes that will be saved in the primary name data base.
         """
@@ -148,12 +148,12 @@ class SNAADataset:
         Parameters
         ----------
         trace_id: int
-            ID of the trace.
+            ID of the trace
         primary_name: str
-            Primary name of the trace. If the primary name is not registrated, the function registrade the primary name
-            without any attributs.
+            Primary name of the trace. If the primary name is not registered, the function registers the primary name
+            without any attributes.
         series: Series
-            Pandas series that will be registrated and saved as trace.
+            Pandas series that will be registered and saved as trace.
         kwargs:
             Additional attributes that will be saved in the trace data base.
         """
@@ -181,28 +181,36 @@ class SNAADataset:
         return container
 
     @classmethod
-    def new(cls, hdf_file, additional_primary_attributes: list = [], additional_trace_attributes: list = [], **kwargs):
+    def new(cls, hdf_file, additional_primary_attributes: list = None, additional_trace_attributes: list = None,
+            **kwargs):
         """
         Create new dataset.
 
         Parameters
         ----------
         hdf_file: str
-            file / path of the new dataset.
-        additional_primary_attributes: list, optional
-            Additional attributes for the primary name database. Defautl [].
-        additional_trace_attributes: list, optional
-            Additional attributes for the trace database. Defautl [].
+            file / path of the new dataset
+        additional_primary_attributes: list or None, optional
+            Additional attributes for the primary name database. If None, no attributes will be added. Default is None.
+        additional_trace_attributes: list or None, optional
+            Additional attributes for the trace database. If None, no attributes will be added. Default is None.
         step: int, optional
-            Step size for data return. Default 1.
+            Step size for data return. Default is 1.
         smoother: Smoother or None
-            Smoother for smoothing the data before applying the step. If None, the data will be not smoothed. Default
-            None.
+            Smoother for smoothing the data before applying the step. If None, the data will not be smoothed. Default
+            is None.
 
         Returns
         -------
         dataset object: SNAADataset
         """
+
+        if additional_primary_attributes is None:
+            additional_primary_attributes = []
+
+        if additional_trace_attributes is None:
+            additional_trace_attributes = []
+
         primary_registration = pd.DataFrame([], columns=[] + additional_primary_attributes)
         trace_registration = pd.DataFrame([], columns=['primary_name'] + additional_trace_attributes)
 
