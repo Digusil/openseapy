@@ -1,7 +1,7 @@
 **SNAA** is a python package for the detection of spontaneous events in time series of patchclamp signals.
 
 ## Installation
-Currently, the package is only available on github. To run the **SNAA** package, the [**eventsearch**](https://github.com/digusil/eventsearch) is required. This pack
+Currently, the package is only available on github. To run the **SNAA** package, the [**eventsearch**](https://github.com/digusil/eventsearch) is required.
 ```shell
 git clone https://github.com/digusil/eventsearch
 cd eventsearch && pyhton setup.py install
