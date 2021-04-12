@@ -32,6 +32,7 @@ CHANGE LOG:
     - 0.1.2
         divide code in packages
         add docstrings and untitests
+        release on github
 
 '''
 __version__ = '0.1.2'
