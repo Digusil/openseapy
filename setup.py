@@ -15,13 +15,8 @@ __maintainer__ = 'Thomas Pircher'
 __email__ = 'thomas.pircher@fau.de'
 __status__ = 'Development'
 
-requirements = [
-    'numpy>=1.20.1',
-    'scipy>=1.6.0',
-    'pandas>=1.2.1',
-    'cached-property>=1.5.2',
-    'eventsearch'
-]
+with open('requirements.txt') as f:
+    requirements = f.read().splitlines()
 
 
 def get_readme():

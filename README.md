@@ -1,3 +1,7 @@
+# SNAA
+
+![License](https://img.shields.io/github/license/Digusil/snaa.svg) ![Build status](https://github.com/Digusil/snaa/actions/workflows/python-package.yml/badge.svg?branch=master) ![Version](https://img.shields.io/github/v/release/Digusil/snaa.svg)
+
 **SNAA** is a python package for the detection of spontaneous events in time series of patchclamp signals.
 
 ## Installation
