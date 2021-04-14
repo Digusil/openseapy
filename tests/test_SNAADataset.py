@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 
 from snaa.dataset import SNAADataset
-from utils import TemporaryFolder
+from .utils import TemporaryFolder
 
 
 class TestSNAADataset(unittest.TestCase):
