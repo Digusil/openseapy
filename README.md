@@ -11,16 +11,33 @@ git clone https://github.com/digusil/eventsearch
 cd eventsearch && pyhton setup.py install
 ```
 
-After installing the **eventsearch** package, you can install the **SNAA** package.
+If the eventsearch source is cloned into the snaa source, the testing will fail, because the imports in the 'eventesearch/tests/' will not be resolved propperly. To prevent this use separate source folders or delete the 'eventesearch/tests/' folder. 
+
+Recommended folder structure:
+
+    .                   # source folder
+    ├── ...
+    ├── eventsearch     # eventsearch code
+    │   ├── ...
+    │   └── tests
+    └── snaa            # snaa code
+        ├── ... 
+        └── tests
+        
+After installing the **eventsearch** package, you can install the **SNAA** package. 
 ```shell
 git clone https://github.com/digusil/snaa
-cd eventsearch && pyhton setup.py
+cd snaa && pyhton setup.py
 ```
 
 ### Testing
-The package has a unittest for the core functions.
+The package has a unittest for the core functions. Run the test in the 'snaa/' or 'snaa/tests/' folder.
 ```shell
-cd ./test && python -m unittest
+python -m unittest
+```
+Alternative:
+```shell
+pytest
 ```
 
 ## Acknowledgement
