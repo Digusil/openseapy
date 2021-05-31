@@ -3,13 +3,10 @@ import pandas as pd
 from scipy import signal as scsig, stats
 from .utils import ECDF
 
-from eventsearch.core import CoreEvent, CoreSingleSignal, CoreEventList, CoreEventDataFrame
-
-from eventsearch.saving import save_event_to_hdf5, load_event_from_hdf5, save_eventlist_to_hdf5, load_eventlist_from_hdf5, \
-    save_eventdataframe_to_hdf5, load_eventdataframe_from_hdf5
+from .events import EventDataFrame as OrigEventDataFrame
 
 
-class EventDataFrame(CoreEventDataFrame):
+class EventDataFrame(OrigEventDataFrame):
     def __init__(self, *args, **kwargs):  #
         """
         event dataframe class
@@ -56,37 +53,8 @@ class EventDataFrame(CoreEventDataFrame):
 
         return pd.DataFrame.from_dict(data_dict)
 
-    def search(self, threshold, window_length):
+    def threshold_based_search(self, threshold, window_length):
         self.data = self._threshold_analysis(threshold, window_length)
-
-    def save(self, filepath, overwrite=True):
-        """
-        Save object as hdf.
-
-        Parameters
-        ----------
-        filepath: str
-            name / path of the file
-        overwrite: bool, optional
-            should an existing file be overwritten? Default is True.
-        """
-        save_eventdataframe_to_hdf5(self, filepath, overwrite)
-
-    @classmethod
-    def load(cls, filepath: str):
-        """
-        Load object from hdf.
-
-        Parameters
-        ----------
-        filepath: str
-            name / path of the file
-
-        Returns
-        -------
-        loaded event dataframe: EventDataFrame
-        """
-        return load_eventdataframe_from_hdf5(filepath, use_class=cls)
 
 
 def find_baseline(signal, window_length):

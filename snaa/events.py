@@ -3,7 +3,8 @@ from cached_property import cached_property
 from scipy.optimize import minimize
 
 from eventsearch.signals import Smoother
-from eventsearch.events import Event, EventDataFrame
+from eventsearch.events import Event
+from eventsearch.events import EventDataFrame as OrigEventDataFrame
 from eventsearch.event_utils import analyse_capacitor_behavior
 
 
@@ -202,6 +203,25 @@ class SpontaneousActivityEvent(Event):
         mean slope of event rising by linearizing: float
         """
         return (self.peak_value - self.start_value) / (self.peak_time - self.start_time)
+
+
+class EventDataFrame(OrigEventDataFrame):
+    def __init__(self, *args, **kwargs):
+        """
+        Extend EventDataFrame from eventsearch with the probability to add complete SNAADatasets as data.
+        """
+        super(EventDataFrame, self).__init__(*args, **kwargs)
+
+    def set_dataset(self, dataset):
+        """
+        Add complete SNAADataset as data.
+
+        Parameters
+        ----------
+        dataset: SNAADataset
+        """
+        self.data = pd.DataFrame()
+        self._signal_dict = dataset
 
 
 def extend_spontaneous_activity_values(event_df):

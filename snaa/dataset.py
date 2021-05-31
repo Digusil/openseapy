@@ -113,6 +113,37 @@ class SNAADataset:
 
         return data[::self.step]
 
+    def __getitem__(self, item):
+        """
+        emulate dictionary behavior
+
+        Parameters
+        ----------
+        item: trace name
+
+        Returns
+        -------
+        trace data: ndarray
+        """
+        return self._get_data(item)
+
+    def __missing__(self, key):
+        raise ValueError("{:s} is not a trace in dataset.".format(key))
+
+    def __len__(self):
+        return len(self.trace_df)
+
+    def __iter__(self):
+        for trace in self.trace_df.index:
+            yield self[trace]
+
+    def __reversed__(self):
+        for trace in self.trace_df.index[::-1]:
+            yield self[trace]
+
+    def __contains__(self, item):
+        return item in self.trace_df.index
+
     def commit(self):
         """
         Commit changes in the registration to file.
