@@ -1,4 +1,7 @@
+import numpy as np
 import pandas as pd
+
+from .signals import SingleSignal
 
 
 class SNAADataset:
@@ -123,9 +126,11 @@ class SNAADataset:
 
         Returns
         -------
-        trace data: ndarray
+        trace data: SingleSignal
         """
-        return self._get_data(item)
+        trace =self._get_data(item)
+
+        return SingleSignal(t=np.array(trace.index), y=trace.values, name=item)
 
     def __missing__(self, key):
         raise ValueError("{:s} is not a trace in dataset.".format(key))
@@ -134,15 +139,23 @@ class SNAADataset:
         return len(self.trace_df)
 
     def __iter__(self):
-        for trace in self.trace_df.index:
-            yield self[trace]
+        for key in self.trace_df.index:
+            yield key
 
     def __reversed__(self):
-        for trace in self.trace_df.index[::-1]:
-            yield self[trace]
+        for key in self.trace_df.index[::-1]:
+            yield key
 
     def __contains__(self, item):
         return item in self.trace_df.index
+
+    def keys(self):
+        for key in self:
+            yield key
+
+    def values(self):
+        for key in self:
+            yield self[key]
 
     def commit(self):
         """

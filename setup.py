@@ -1,7 +1,7 @@
 #! /opt/conda/bin/python3
 """ General PyPI compliant setup.py configuration of the package """
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 version = {}
 with open("snaa/version.py") as fp:

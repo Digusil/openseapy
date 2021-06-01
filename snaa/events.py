@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 from cached_property import cached_property
 from scipy.optimize import minimize
 
