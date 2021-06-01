@@ -1,9 +1,9 @@
 import numpy as np
 import pandas as pd
 from scipy import signal as scsig, stats
-from .utils import ECDF
 
-from .events import EventDataFrame as OrigEventDataFrame
+from ..utils import ECDF
+from ..events import EventDataFrame as OrigEventDataFrame
 
 
 class EventDataFrame(OrigEventDataFrame):
@@ -55,6 +55,9 @@ class EventDataFrame(OrigEventDataFrame):
 
     def threshold_based_search(self, threshold, window_length):
         self.data = self._threshold_analysis(threshold, window_length)
+
+    def search(self, *args, signal=None, **kwargs):
+        self.threshold_based_search(*args, **kwargs)
 
 
 def find_baseline(signal, window_length):

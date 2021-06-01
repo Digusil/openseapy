@@ -42,7 +42,7 @@ setup(
     url='https://github.com/digusil/snaa',
     license=__license__,
     keywords=['SNAA', 'spontaneous neuron activity', 'eventsearch'],
-    packages=['snaa'],
+    packages=find_packages(),
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Science/Research",
