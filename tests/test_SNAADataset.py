@@ -88,7 +88,7 @@ class TestSNAADataset(unittest.TestCase):
 
         data = dataset['name1/t000']
 
-        pd.testing.assert_series_equal(data, series)
+        pd.testing.assert_series_equal(data.to_series(), series)
 
 
 if __name__ == '__main__':

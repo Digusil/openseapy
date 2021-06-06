@@ -1,3 +1,5 @@
+import warnings
+
 import numpy as np
 import pandas as pd
 from scipy import signal as scsig, stats
@@ -53,11 +55,12 @@ class EventDataFrame(OrigEventDataFrame):
 
         return pd.DataFrame.from_dict(data_dict)
 
-    def threshold_based_search(self, threshold, window_length):
-        self.data = self._threshold_analysis(threshold, window_length)
+    def threshold_based_search(self, *args, **kwargs):
+        warnings.warn("'threshold_based_search' will be removed in the future. Use 'search'!", DeprecationWarning)
+        self.search(*args, **kwargs)
 
-    def search(self, *args, signal=None, **kwargs):
-        self.threshold_based_search(*args, **kwargs)
+    def search(self, threshold, window_length):
+        self.data = self._threshold_analysis(threshold, window_length)
 
 
 def find_baseline(signal, window_length):
