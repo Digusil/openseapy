@@ -224,7 +224,7 @@ class EventDataFrame(OrigEventDataFrame):
         self.data = pd.DataFrame()
         self._signal_dict = dataset
 
-    def search(self, *args, **kwargs):
+    def search(self, *args, extend=True, **kwargs):
         """
         Search events by slope threshold triggers and extend spontaneous activity values.
 
@@ -254,7 +254,8 @@ class EventDataFrame(OrigEventDataFrame):
             dictionary will be analysed. Default is None.
         """
         self._search_slope(*args, **kwargs)
-        extend_spontaneous_activity_values(self)
+        if extend:
+            extend_spontaneous_activity_values(self)
 
 
 def extend_spontaneous_activity_values(event_df):
