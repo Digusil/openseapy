@@ -47,7 +47,7 @@ class EventDataFrame(OrigEventDataFrame):
                     data_dict['signal_name'].append(signal_name)
                     data_dict['peak_y'].append(signal.y[peak])
                     data_dict['peak_t'].append(signal.t[peak]
-                    )
+                                               )
             else:
                 data_dict['signal_name'].append(signal_name)
                 data_dict['peak_t'].append(np.NaN)
@@ -56,14 +56,48 @@ class EventDataFrame(OrigEventDataFrame):
         return pd.DataFrame.from_dict(data_dict)
 
     def threshold_based_search(self, *args, **kwargs):
+        """
+        Search events based on a threshold.
+
+        Parameters
+        ----------
+        threshold: float
+            threshold factor based on the deviation
+        window_length: int
+            size of the smoothing window
+        """
         warnings.warn("'threshold_based_search' will be removed in the future. Use 'search'!", DeprecationWarning)
         self.search(*args, **kwargs)
 
     def search(self, threshold, window_length):
+        """
+        Search events based on a threshold.
+
+        Parameters
+        ----------
+        threshold: float
+            threshold factor based on the deviation
+        window_length: int
+            size of the smoothing window
+        """
         self.data = self._threshold_analysis(threshold, window_length)
 
 
 def find_baseline(signal, window_length):
+    """
+    Find signal basline based on filtering and ecdf.
+
+    Parameters
+    ----------
+    signal: ndarray
+        filtered signal that will be analyzed
+    window_length: int
+        size of the smoothing window
+
+    Returns
+    -------
+        baseline: ndarray
+    """
     baseline = []
     for start_id in range(len(signal) - window_length):
         window = signal[start_id:start_id + window_length]
@@ -79,6 +113,24 @@ def find_baseline(signal, window_length):
 
 
 def threshold_based_analysis(signal, threshold, window_length, butter_freqs=[100, 2e3]):
+    """
+    Detect events based on threshold.
+
+    Parameters
+    ----------
+    signal: SingleSignal
+        signal that will be analyzed
+    threshold: float
+            threshold factor based on the deviation
+    window_length: int
+        size of the smoothing window
+    butter_freqs: list, optinal
+        filter freqeuncies in Hz for the band pass filter. Default [100, 2e3]
+
+    Returns
+    -------
+    peak_ids: list
+    """
     fs = 1 / np.median(np.diff(signal.t))
 
     b, a = scsig.butter(3, np.divide(butter_freqs, fs), 'bandpass', analog=False)

@@ -128,7 +128,7 @@ class SNAADataset:
         -------
         trace data: SingleSignal
         """
-        trace =self._get_data(item)
+        trace = self._get_data(item)
 
         return SingleSignal(t=np.array(trace.index), y=trace.values, name=item)
 

@@ -34,5 +34,9 @@ CHANGE LOG:
         add docstrings and untitests
         release on github
 
+    - 0.1.3
+        dictionary behavior for SNAADataset
+        threshold based deteciotion for comparison
+
 '''
-__version__ = '0.1.2'
+__version__ = '0.1.3'
