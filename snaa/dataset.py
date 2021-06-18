@@ -1,4 +1,7 @@
+import numpy as np
 import pandas as pd
+
+from .signals import SingleSignal
 
 
 class SNAADataset:
@@ -112,6 +115,47 @@ class SNAADataset:
             data = pd.Series(self.smoother.smooth(data), index=data.index)
 
         return data[::self.step]
+
+    def __getitem__(self, item):
+        """
+        emulate dictionary behavior
+
+        Parameters
+        ----------
+        item: trace name
+
+        Returns
+        -------
+        trace data: SingleSignal
+        """
+        trace = self._get_data(item)
+
+        return SingleSignal(t=np.array(trace.index), y=trace.values, name=item)
+
+    def __missing__(self, key):
+        raise ValueError("{:s} is not a trace in dataset.".format(key))
+
+    def __len__(self):
+        return len(self.trace_df)
+
+    def __iter__(self):
+        for key in self.trace_df.index:
+            yield key
+
+    def __reversed__(self):
+        for key in self.trace_df.index[::-1]:
+            yield key
+
+    def __contains__(self, item):
+        return item in self.trace_df.index
+
+    def keys(self):
+        for key in self:
+            yield key
+
+    def values(self):
+        for key in self:
+            yield self[key]
 
     def commit(self):
         """

@@ -77,6 +77,19 @@ class TestSNAADataset(unittest.TestCase):
 
         pd.testing.assert_series_equal(data, series)
 
+    def test_snaadataset_dictionary_behavior(self):
+        dataset = SNAADataset.new(self.folder("data.h5"), additional_trace_attributes=['test1', 'test2'])
+
+        dataset.register_primary_name('name1')
+
+        series = pd.Series(np.ones(shape=(10,)), index=np.linspace(0, 1, 10))
+
+        dataset.add_trace(0, 'name1', series, test1=1, test2='test')
+
+        data = dataset['name1/t000']
+
+        pd.testing.assert_series_equal(data.to_series(), series)
+
 
 if __name__ == '__main__':
     unittest.main()

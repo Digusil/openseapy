@@ -1,7 +1,7 @@
 #! /opt/conda/bin/python3
 """ General PyPI compliant setup.py configuration of the package """
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 version = {}
 with open("snaa/version.py") as fp:
@@ -42,7 +42,7 @@ setup(
     url='https://github.com/digusil/snaa',
     license=__license__,
     keywords=['SNAA', 'spontaneous neuron activity', 'eventsearch'],
-    packages=['snaa'],
+    packages=find_packages(),
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Science/Research",
