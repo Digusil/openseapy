@@ -113,6 +113,7 @@ class SpontaneousActivityEvent(Event):
         smoother: Smoother, optional
             Smoother for smoothing the data. Default is Smoother(window_len=31, window='hann').
         """
+
         def loss(par):
             return np.mean((self._capacitor_hypothesis(t, *par) - y) ** 2)
 
@@ -155,7 +156,7 @@ class SpontaneousActivityEvent(Event):
         tau = self[type + '_cap_tau']
 
         if ymax is np.NaN or tau is np.NaN:
-            return np.array(len(t_local) * [np.NaN,])
+            return np.array(len(t_local) * [np.NaN, ])
         else:
             return self._capacitor_hypothesis(t_local, ymax, tau)
 
@@ -168,6 +169,7 @@ class SpontaneousActivityEvent(Event):
         smoother: Smoother, optional
             Smoother for smoothing the data. Default is no smoothing.
         """
+
         def loss(par):
             return np.nanmean((self._capacitor_hypothesis(t, *par) - y) ** 2)
 
@@ -252,6 +254,8 @@ class EventDataFrame(OrigEventDataFrame):
             Singla data that will be analysed. If SingleSignal, the signal will be added to the singal dictionary. If
             string, the name will be looked up in the signal dictionary. If None, all registraded signals in the signal
             dictionary will be analysed. Default is None.
+        extend: bool, optional
+            Extend EventDataFrame class with spontaneous activity values. Default is True.
         """
         self._search_slope(*args, **kwargs)
         if extend:
