@@ -36,7 +36,7 @@ CHANGE LOG:
 
     - 0.1.3
         dictionary behavior for SNAADataset
-        threshold based deteciotion for comparison
+        threshold based detection for comparison
 
 '''
 __version__ = '0.1.3'

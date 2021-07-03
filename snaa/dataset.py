@@ -130,7 +130,7 @@ class SNAADataset:
         """
         trace = self._get_data(item)
 
-        return SingleSignal(t=np.array(trace.index), y=trace.values, name=item)
+        return SingleSignal(t=np.array(trace.index), y=trace.values, name=item, listed=False)
 
     def __missing__(self, key):
         raise ValueError("{:s} is not a trace in dataset.".format(key))
