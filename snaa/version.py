@@ -38,5 +38,8 @@ CHANGE LOG:
         dictionary behavior for SNAADataset
         threshold based detection for comparison
 
+    - 0.1.4
+        advanced threshold based detection from https://doi.org/10.1016/S0956-5663(02)00053-2 as comparison
+
 '''
-__version__ = '0.1.3'
+__version__ = '0.1.4a'

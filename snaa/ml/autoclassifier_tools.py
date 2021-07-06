@@ -15,7 +15,7 @@ def arrange_data(data, code_dict):
 
     Returns
     -------
-    convertet lables array: ndarray
+    converted labels array: ndarray
     """
     return np.array(list(map(lambda x: code_dict[x] if not np.isnan(x) else 0, data)))
 
