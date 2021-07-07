@@ -124,9 +124,9 @@ def advanced_threshold(signal, threshold, slope, bin_width, pp, noise):
 
     wi = int(threshold / slope * signal.fs)
 
-    i_trigger = -signal.y[wi:] > -signal.y[:-wi] + threshold
+    #i_trigger = -signal.y[wi:] > -signal.y[:-wi] + threshold
 
-    for i in np.where(i_trigger)[0]:
+    for i in np.arange(len(signal) - wi):#np.where(i_trigger)[0]:
         if i > last_peak_point:
             on_set_point = i
 
