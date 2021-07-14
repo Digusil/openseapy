@@ -40,6 +40,7 @@ CHANGE LOG:
 
     - 0.1.4
         advanced threshold based detection from https://doi.org/10.1016/S0956-5663(02)00053-2 as comparison
+        universal data loader classes
 
 '''
-__version__ = '0.1.4a'
+__version__ = '0.1.4a1'
