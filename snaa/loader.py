@@ -139,19 +139,26 @@ class CSVLoader(CoreLoader):
             yield pd.Series(row * self.amplify, index=time, name=name)
 
 
-def collect_data(loader, sources_dict, target_file):
+def collect_data(loader, sources_dict, target_file, append=False):
     """
-    
+    Collect raw data.
+
     Parameters
     ----------
-    loader
-    sources_dict
-    target_file
+    loader: CoreLoader
+        loader object
+    sources_dict: dictionary
+        dictionary with information about the files (key) and additional meta information (value)
+    target_file: str
+        path to the file to store the data
+    append: bool, optional
+        If true, the data will be appended, else the file will be overwritten. Default False.
 
-    Returns
+    Returns: SNAADataset
     -------
 
     """
+
     config_columns = sources_dict[next(iter(sources_dict))].keys()
     file_registration = pd.DataFrame([], columns=['filename', 'folder', *list(config_columns)])
     trace_registration = pd.DataFrame([], columns=['primary_name'])
@@ -169,6 +176,16 @@ def collect_data(loader, sources_dict, target_file):
             trace_registration.loc[series_name] = [primary_name]
 
             series.to_hdf(target_file, key='series/' + series_name)
+
+    if append:
+        try:
+            previous_file_registration = pd.read_hdf(target_file, key='data_registration')
+            previous_trace_registration = pd.read_hdf(target_file, key='trace_registration')
+
+            file_registration = previous_file_registration.append(file_registration)
+            trace_registration = previous_trace_registration.append(trace_registration)
+        except KeyError:
+            pass
 
     file_registration.to_hdf(target_file, key='data_registration')
     trace_registration.to_hdf(target_file, key='trace_registration')
