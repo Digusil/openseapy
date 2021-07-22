@@ -37,4 +37,4 @@ CHANGE LOG:
         autoclassifier class
 
 """
-__version__ = '0.1.4a2'
+__version__ = '0.1.4'
