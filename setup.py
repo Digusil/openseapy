@@ -10,7 +10,7 @@ with open("snaa/version.py") as fp:
 __author__ = 'Thomas Pircher'
 __version__ = version['__version__']
 __copyright__ = '2021, FAU-iPAT'
-__license__ = 'Apache-2.0'  # todo: checck if this license is ok
+__license__ = 'Apache-2.0'
 __maintainer__ = 'Thomas Pircher'
 __email__ = 'thomas.pircher@fau.de'
 __status__ = 'Development'
@@ -37,11 +37,19 @@ setup(
     version=__version__,
     author=__author__,
     author_email=__email__,
-    description='SNAA is a python package for detection spontanous events in time series of patchclam signals.',
+    description='A python based analysis of spontaneous excitatory postsynaptic currents (spEPSCs).',
     long_description=get_readme(),
     url='https://github.com/digusil/snaa',
     license=__license__,
-    keywords=['SNAA', 'spontaneous neuron activity', 'eventsearch'],
+    keywords=[
+        'SNAA',
+        'spontaneous neuron activity',
+        'patch clamp analysis',
+        'eventsearch',
+        'event detection',
+        'neuroscience',
+        'computational biology'
+    ],
     packages=find_packages(),
     classifiers=[
         "Development Status :: 3 - Alpha",

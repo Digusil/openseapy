@@ -5,29 +5,10 @@ import numpy as np
 import pandas as pd
 
 from snaa.dataset import SNAADataset
-from .utils import TemporaryFolder
+from .utils import TestCaseWithTemporaryFolder
 
 
-class TestSNAADataset(unittest.TestCase):
-    def __init__(self, *args, **kwargs):
-        super(TestSNAADataset, self).__init__(*args, **kwargs)
-
-        self._folder = TemporaryFolder()
-        self._folder.__enter__()
-
-    @property
-    def data_folder(self):
-        return self._folder()
-
-    def folder(self, path):
-        return self._folder.folder(path)
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        del self._folder
-
-    def __del__(self):
-        del self._folder
-
+class TestSNAADataset(TestCaseWithTemporaryFolder):
     def test_snaadataset_creation(self):
         dataset = SNAADataset.new(self.folder("data.h5"),
                                   additional_primary_attributes=['Ftest1', 'Ftest2'],

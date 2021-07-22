@@ -1,3 +1,4 @@
+import warnings
 import numpy as np
 import pandas as pd
 
@@ -130,7 +131,7 @@ class SNAADataset:
         """
         trace = self._get_data(item)
 
-        return SingleSignal(t=np.array(trace.index), y=trace.values, name=item)
+        return SingleSignal(t=np.array(trace.index), y=trace.values, name=item, listed=False)
 
     def __missing__(self, key):
         raise ValueError("{:s} is not a trace in dataset.".format(key))
@@ -209,7 +210,7 @@ class SNAADataset:
         new_df_row = pd.DataFrame(data_dict, index=[series_name])
 
         if primary_name not in self.primary_name_df:
-            # todo: warning, wild primary name registration
+            warnings.warn("{} is not registered. Prevent wild primary name registration.", Warning)
             self.register_primary_name(primary_name)
 
         self._trace_register = self.trace_df.append(new_df_row)

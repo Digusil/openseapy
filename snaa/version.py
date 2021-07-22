@@ -1,12 +1,4 @@
-'''
-project:    snaa
-filename:	version
-author:		pi
-date:		2020-04-06
-version:	
-
-description:
-
+"""
 CHANGE LOG:
 
     - 0.1.0:
@@ -26,7 +18,7 @@ CHANGE LOG:
         nadaraya-watson estimator with variance estimator
         implement Estimator class
         implement EventDataFrame class
-        dataset class with sequence generator for tensorlfow
+        dataset class with sequence generator for tensorflow
         resampling data in sequence generator
 
     - 0.1.2
@@ -36,7 +28,13 @@ CHANGE LOG:
 
     - 0.1.3
         dictionary behavior for SNAADataset
-        threshold based deteciotion for comparison
+        threshold based detection for comparison
 
-'''
-__version__ = '0.1.3'
+    - 0.1.4
+        advanced threshold based detection from https://doi.org/10.1016/S0956-5663(02)00053-2 as comparison
+        universal data loader classes
+        universal autoclassifier interpreter function
+        autoclassifier class
+
+"""
+__version__ = '0.1.4'

@@ -85,7 +85,7 @@ class EventDataFrame(OrigEventDataFrame):
 
 def find_baseline(signal, window_length):
     """
-    Find signal basline based on filtering and ecdf.
+    Find signal baseline based on filtering and ecdf.
 
     Parameters
     ----------
@@ -102,9 +102,9 @@ def find_baseline(signal, window_length):
     for start_id in range(len(signal) - window_length):
         window = signal[start_id:start_id + window_length]
 
-        quantille = ECDF(window).eval(0.33)
+        quantile = ECDF(window).eval(0.33)
 
-        baseline.append(quantille)
+        baseline.append(quantile)
 
         front_buffer = int(np.ceil(window_length / 2))
         back_buffer = len(signal) - len(baseline) - front_buffer
@@ -112,7 +112,7 @@ def find_baseline(signal, window_length):
     return np.array(front_buffer * [np.NaN, ] + baseline + back_buffer * [np.NaN, ])
 
 
-def threshold_based_analysis(signal, threshold, window_length, butter_freqs=[100, 2e3]):
+def threshold_based_analysis(signal, threshold, window_length, butter_freqs=None):
     """
     Detect events based on threshold.
 
@@ -124,13 +124,15 @@ def threshold_based_analysis(signal, threshold, window_length, butter_freqs=[100
             threshold factor based on the deviation
     window_length: int
         size of the smoothing window
-    butter_freqs: list, optinal
-        filter freqeuncies in Hz for the band pass filter. Default [100, 2e3]
+    butter_freqs: list, optional
+        filter frequencies in Hz for the band pass filter. Default [100, 2e3]
 
     Returns
     -------
     peak_ids: list
     """
+    if butter_freqs is None:
+        butter_freqs = [100, 2e3]
     fs = 1 / np.median(np.diff(signal.t))
 
     b, a = scsig.butter(3, np.divide(butter_freqs, fs), 'bandpass', analog=False)
@@ -147,3 +149,5 @@ def threshold_based_analysis(signal, threshold, window_length, butter_freqs=[100
               np.where(np.diff(1.0 * (filtered_signal < - threshold * std_approx)) < 0)[0]
 
     return [t1 + np.argmin(signal.y[t1:t2]) for t1, t2 in zip(*trigger)]
+
+
