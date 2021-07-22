@@ -50,7 +50,6 @@
 *.npy
 *.mat
 *.pkl
-*.png
 *.csv
 
 # macOS
