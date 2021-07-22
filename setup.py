@@ -37,11 +37,19 @@ setup(
     version=__version__,
     author=__author__,
     author_email=__email__,
-    description='SNAA is a python package for detection spontanous events in time series of patchclam signals.',
+    description='A python based analysis of spontaneous excitatory postsynaptic currents (spEPSCs).',
     long_description=get_readme(),
     url='https://github.com/digusil/snaa',
     license=__license__,
-    keywords=['SNAA', 'spontaneous neuron activity', 'eventsearch'],
+    keywords=[
+        'SNAA',
+        'spontaneous neuron activity',
+        'patch clamp analysis',
+        'eventsearch',
+        'event detection',
+        'neuroscience',
+        'computational biology'
+    ],
     packages=find_packages(),
     classifiers=[
         "Development Status :: 3 - Alpha",
