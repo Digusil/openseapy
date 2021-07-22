@@ -154,9 +154,9 @@ def collect_data(loader, sources_dict, target_file, append=False):
     append: bool, optional
         If true, the data will be appended, else the file will be overwritten. Default False.
 
-    Returns: SNAADataset
+    Returns
     -------
-
+    SNAADataset
     """
 
     config_columns = sources_dict[next(iter(sources_dict))].keys()

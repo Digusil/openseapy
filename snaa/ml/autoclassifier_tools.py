@@ -1,5 +1,11 @@
+from copy import copy
+
+import h5py
 import numpy as np
 from eventsearch.utils import Smoother, assign_elements
+
+from h5py._hl.base import phil
+from h5py._hl import attrs
 
 
 def arrange_data(data, code_dict):
@@ -20,7 +26,15 @@ def arrange_data(data, code_dict):
     return np.array(list(map(lambda x: code_dict[x] if not np.isnan(x) else 0, data)))
 
 
-def analyse_autoclassifier(data, max_length=250, min_length=30, noise_level=0.25, debug_mode=False):
+def analyse_autoclassifier(
+        data,
+        max_length=250,
+        min_length=30,
+        noise_level=0.25,
+        noise_label=2,
+        ordered_labels=None,
+        debug_mode=False
+):
     """
     Analyse label data and extract events.
 
@@ -34,6 +48,10 @@ def analyse_autoclassifier(data, max_length=250, min_length=30, noise_level=0.25
         minimum event length
     noise_level: float, optional
         Maximum noise proportion for valid event. Default is 0.25.
+    noise_label: int, optional
+        Label of the noise. Default 2.
+    ordered_labels: list or None, optional
+        Forward ordered labels of the signal states. Default is None ([4, 3, 0, 6, 5, 1]).
     debug_mode: bool, optional
         Is True, if additional values will be returned. Default is False.
 
@@ -54,25 +72,20 @@ def analyse_autoclassifier(data, max_length=250, min_length=30, noise_level=0.25
     ac_event_end: ndarray
         end trigger
     """
-    code_fwd_dict = {
-        2: 0,
-        4: 1,
-        3: 2,
-        0: 3,
-        6: 4,
-        5: 5,
-        1: 6
-    }
+    if ordered_labels is None:
+        ordered_labels = [4, 3, 0, 6, 5, 1]
 
-    code_rev_dict = {
-        2: 0,
-        4: 6,
-        3: 5,
-        0: 4,
-        6: 3,
-        5: 2,
-        1: 1
-    }
+    all_labels = [noise_label, ] + ordered_labels
+
+    assert len(all_labels) == len(np.unique(all_labels)), "Labels have to be unique!"
+
+    code_fwd_dict = {}
+    for idl, label in enumerate(all_labels):
+        code_fwd_dict.update({label: idl})
+
+    code_rev_dict = {}
+    for idl, label in enumerate([noise_label, ] + ordered_labels[::-1]):
+        code_rev_dict.update({label: idl})
 
     ac_data_fwd = arrange_data(data, code_fwd_dict)
     ac_data_rws = arrange_data(data, code_rev_dict)
@@ -120,3 +133,44 @@ def analyse_autoclassifier(data, max_length=250, min_length=30, noise_level=0.25
         return ac_events, ac_event_numbers, ac_data_fwd_smoothed, ac_data_rev_smoothed, ac_event_start, ac_event_end
     else:
         return ac_events, ac_event_numbers
+
+
+class MimicHDFFile(h5py.File):
+    """
+    Tensorflow checks for h5py.File instances. To combine multiple models in one hdf file, the models have to be stored
+    in groups not in file. The h5py.File-class is an instances of h5py.Group-class. Thus, h5py.File-objects are extended
+    h5py.Group-objects. This class casts a h5py.Group-object as a h5py.File-object and adepts methods:
+        - flush method is deactivated:
+            Tensorflow handle the h5py.Group-objects like a file and want to flush the data at the end. The model saving
+            is only a part of the operations on the current file. Thus, the flush method of this class is deactivated.
+        - attrs property is corrected:
+            A h5py.File-object writes its attributes always to "/". This is a correct behavior for a h5py.File-object.
+            In this case, the object is a group and the attributes have to be stored to the group and not to root.
+    """
+    def __init__(self, orig_obj):
+        """
+        Cast the original object to a MimicHDFFile-object.
+
+        Parameters
+        ----------
+        orig_obj: h5py.Group
+        """
+        self.__dict__ = copy(orig_obj.__dict__)
+
+    def flush(self):
+        """
+        Flush method does nothing.
+        """
+        pass
+
+    @property
+    def attrs(self):
+        """
+        Attributes attached to this group.
+
+        Returns
+        -------
+        group attributes
+        """
+        with phil:
+            return attrs.AttributeManager(self)

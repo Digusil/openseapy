@@ -10,7 +10,7 @@ with open("snaa/version.py") as fp:
 __author__ = 'Thomas Pircher'
 __version__ = version['__version__']
 __copyright__ = '2021, FAU-iPAT'
-__license__ = 'Apache-2.0'  # todo: checck if this license is ok
+__license__ = 'Apache-2.0'
 __maintainer__ = 'Thomas Pircher'
 __email__ = 'thomas.pircher@fau.de'
 __status__ = 'Development'
