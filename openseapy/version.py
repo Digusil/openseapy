@@ -27,7 +27,7 @@ CHANGE LOG:
         release on github
 
     - 0.1.3
-        dictionary behavior for SNAADataset
+        dictionary behavior for SNADataset
         threshold based detection for comparison
 
     - 0.1.4

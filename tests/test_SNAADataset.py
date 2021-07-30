@@ -4,16 +4,16 @@ import os
 import numpy as np
 import pandas as pd
 
-from snaa.dataset import SNAADataset
+from openseapy.dataset import SNADataset
 from .utils import TestCaseWithTemporaryFolder
 
 
-class TestSNAADataset(TestCaseWithTemporaryFolder):
-    def test_snaadataset_creation(self):
-        dataset = SNAADataset.new(self.folder("data.h5"),
-                                  additional_primary_attributes=['Ftest1', 'Ftest2'],
-                                  additional_trace_attributes=['Ttest3', 'Ttest4']
-                                  )
+class TestSNADataset(TestCaseWithTemporaryFolder):
+    def test_snadataset_creation(self):
+        dataset = SNADataset.new(self.folder("data.h5"),
+                                 additional_primary_attributes=['Ftest1', 'Ftest2'],
+                                 additional_trace_attributes=['Ttest3', 'Ttest4']
+                                 )
 
         self.assertIn('data.h5', os.listdir(self.data_folder))
 
@@ -22,26 +22,26 @@ class TestSNAADataset(TestCaseWithTemporaryFolder):
 
         del dataset
 
-        dataset = SNAADataset(self.folder("data.h5"), step=2)
+        dataset = SNADataset(self.folder("data.h5"), step=2)
 
         self.assertEqual(list(dataset.primary_name_df.columns), ['Ftest1', 'Ftest2'])
         self.assertEqual(list(dataset.trace_df.columns), ['primary_name', 'Ttest3', 'Ttest4'])
 
         self.assertEqual(dataset.step, 2)
 
-    def test_snaadataset_register_primary_name(self):
-        dataset = SNAADataset.new(self.folder("data.h5"), additional_primary_attributes=['test1', 'test2'])
+    def test_snadataset_register_primary_name(self):
+        dataset = SNADataset.new(self.folder("data.h5"), additional_primary_attributes=['test1', 'test2'])
 
         dataset.register_primary_name('name1', test1=1, test2='test')
 
         del dataset
 
-        dataset = SNAADataset(self.folder("data.h5"))
+        dataset = SNADataset(self.folder("data.h5"))
 
         self.assertEqual(list(dataset.primary_name_df.loc['name1']), [1, 'test'])
 
-    def test_snaadataset_register_trace(self):
-        dataset = SNAADataset.new(self.folder("data.h5"), additional_trace_attributes=['test1', 'test2'])
+    def test_snadataset_register_trace(self):
+        dataset = SNADataset.new(self.folder("data.h5"), additional_trace_attributes=['test1', 'test2'])
 
         dataset.register_primary_name('name1')
 
@@ -51,15 +51,15 @@ class TestSNAADataset(TestCaseWithTemporaryFolder):
 
         del dataset
 
-        dataset = SNAADataset(self.folder("data.h5"))
+        dataset = SNADataset(self.folder("data.h5"))
 
         self.assertEqual(list(dataset.trace_df.loc['name1/t000']), ['name1', 1, 'test'])
         data = dataset._get_data('name1/t000')
 
         pd.testing.assert_series_equal(data, series)
 
-    def test_snaadataset_dictionary_behavior(self):
-        dataset = SNAADataset.new(self.folder("data.h5"), additional_trace_attributes=['test1', 'test2'])
+    def test_snadataset_dictionary_behavior(self):
+        dataset = SNADataset.new(self.folder("data.h5"), additional_trace_attributes=['test1', 'test2'])
 
         dataset.register_primary_name('name1')
 

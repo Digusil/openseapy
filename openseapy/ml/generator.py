@@ -6,15 +6,15 @@ from scipy import signal
 import pandas as pd
 from cached_property import cached_property
 
-from snaa.dataset import SNAADataset as CoreDataset
-from snaa.utils import Smoother
+from openseapy.dataset import SNADataset as CoreDataset
+from openseapy.utils import Smoother
 
 import matplotlib.pyplot as plt
 
 import tensorflow as tf
 
 
-class SNAADataset(CoreDataset):
+class SNADataset(CoreDataset):
     def __init__(
             self,
             hdf_file,
@@ -26,7 +26,7 @@ class SNAADataset(CoreDataset):
             **kwargs
     ):
         """
-        extended database class for SNAA machine learning
+        extended Spontaneous Neuron Answer database class for machine learning
 
         Parameters
         ----------
@@ -66,7 +66,7 @@ class SNAADataset(CoreDataset):
         else:
             self._target_sample_length = target_sample_length
 
-        super(SNAADataset, self).__init__(hdf_file, **kwargs)
+        super(SNADataset, self).__init__(hdf_file, **kwargs)
 
     @property
     def feature_length(self):
@@ -195,7 +195,7 @@ class SNAADataset(CoreDataset):
         -------
         list of sample ids: list
         """
-        return np.random.choice(self.position_len, sample_number, replace=False)
+        return np.sort(np.random.choice(self.position_len, sample_number, replace=False))
 
     def sequence_generator(self, sample_number=None, scaler=lambda x, y: [x - np.mean(x), y - np.mean(x)]):
         """
@@ -214,8 +214,6 @@ class SNAADataset(CoreDataset):
             position_list = self._random_positions(sample_number)
         else:
             position_list = np.arange(self.position_len)
-
-        position_list = np.sort(position_list)
 
         loaded_trace = ''
 

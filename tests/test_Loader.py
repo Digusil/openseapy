@@ -5,8 +5,8 @@ import os
 import numpy as np
 from scipy.io import savemat
 import pandas as pd
-from snaa.dataset import SNAADataset
-from snaa.loader import HekaMatLoader, collect_data
+from openseapy.dataset import SNADataset
+from openseapy.loader import HekaMatLoader, collect_data
 
 from .utils import TestCaseWithTemporaryFolder
 
@@ -83,7 +83,7 @@ class TestHekaMatLoader(TestCaseWithTemporaryFolder):
 
         test = collect_data(loader, self.sources_dict, self.folder('test_collect.h5'))
 
-        self.assertIsInstance(test, SNAADataset)
+        self.assertIsInstance(test, SNADataset)
 
         true_dict = {
             'filename': {},

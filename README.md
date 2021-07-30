@@ -1,17 +1,17 @@
-# SNAA
+# Open Synaptic Event Analyzer for Python
 
-![License](https://img.shields.io/github/license/Digusil/snaa.svg) ![Build status](https://github.com/Digusil/snaa/actions/workflows/python-package.yml/badge.svg?branch=master) ![Version](https://img.shields.io/github/v/release/Digusil/snaa.svg)
+![License](https://img.shields.io/github/license/Digusil/openseapy.svg) ![Build status](https://github.com/Digusil/openseapy/actions/workflows/python-package.yml/badge.svg?branch=master) ![Version](https://img.shields.io/github/v/release/Digusil/openseapy.svg)
 
-**SNAA** is a python package for the detection of spontaneous events in time series of patchclamp signals.
+**openSEApy** is a python package for the detection of spontaneous events in time series of patchclamp signals.
 
 ## Installation
-Currently, the package is only available on github. To run the **SNAA** package, the [**eventsearch**](https://github.com/digusil/eventsearch) is required.
+Currently, the package is only available on github. To run the **openSEApy** package, the [**eventsearch**](https://github.com/digusil/eventsearch) is required.
 ```shell
 git clone https://github.com/digusil/eventsearch
 cd eventsearch && pyhton setup.py install
 ```
 
-If the eventsearch source is cloned into the snaa source, the testing will fail, because the imports in the 'eventesearch/tests/' will not be resolved propperly. To prevent this use separate source folders or delete the 'eventesearch/tests/' folder. 
+If the eventsearch source is cloned into the snaa source, the testing will fail, because the imports in the 'eventesearch/tests/' will not be resolved properly. To prevent this use separate source folders or delete the 'eventesearch/tests/' folder. 
 
 Recommended folder structure:
 
@@ -20,18 +20,18 @@ Recommended folder structure:
     ├── eventsearch     # eventsearch code
     │   ├── ...
     │   └── tests
-    └── snaa            # snaa code
+    └── openseapy       # openSEApy code
         ├── ... 
         └── tests
         
-After installing the **eventsearch** package, you can install the **SNAA** package. 
+After installing the **eventsearch** package, you can install the **openSEApy** package. 
 ```shell
 git clone https://github.com/digusil/snaa
 cd snaa && pyhton setup.py
 ```
 
 ### Testing
-The package has a unittest for the core functions. Run the test in the 'snaa/' or 'snaa/tests/' folder.
+The package has an unittest for the core functions. Run the test in the 'openseapy/' or 'openseapy/tests/' folder.
 ```shell
 python -m unittest
 ```
@@ -46,9 +46,10 @@ SingleSignal object and adding the time and signal data or be loading a single o
 csv-files. 
 
 #### manually
+
 ```python
-from snaa.loader import CSVLoader
-from snaa.signals import SingleSignal
+from openseapy.loader import CSVLoader
+from openseapy.signals import SingleSignal
 
 series = next(CSVLoader(time_row=0)('a_file.csv'))
 t = series.index
@@ -65,8 +66,9 @@ name, the program rises a NameError to prevent multiple or misleading signals. I
 registration of the signal can be deactivated with the parameter `listed=False`.
 
 #### Loader classes
+
 ```python
-from snaa.loader import CSVLoader, collect_data
+from openseapy.loader import CSVLoader, collect_data
 
 loader = CSVLoader(amplify=1e15, time_row=0, sample_rate=50e3)
 
@@ -95,19 +97,20 @@ defines the location of the data as keys and additional parameter, which will be
 
 By calling `collect_data(loader, sources_dict, 'data/collected_data.h5')` the function iterates over the dictionary and
 extract, register the traces and store the traces in the hdf file *data/collected_data.h5*. Additionally, the function 
-returns a SNAADataset object containing of the loaded data. 
+returns a SNADataset object containing of the loaded data. 
 
 ### Dataset class
-The SNAADataset class can be used to handle and preprocess the data. An additional benefit is the reduction of needed
-RAM, because the signal data will be loaded dynamically form the hdf file. The SNAADataset object reacts like a 
+The SNADataset class can be used to handle and preprocess the data. An additional benefit is the reduction of needed
+RAM, because the signal data will be loaded dynamically form the hdf file. The SNADataset object reacts like a 
 dictionary. To access a signal use square brackets and the trace name like it is stored in the `trace_df` dataframe.
 
-For machine learning an extended version of the SNAADataset exist in *ml/generators.py*. This version can generate a 
+For machine learning an extended version of the SNADataset exist in *ml/generators.py*. This version can generate a 
 tfdata instance that can directly be used for training and validation.
 
-### Analyzing 
+### Analyzing
+
 ````python
-from snaa.events import EventDataFrame
+from openseapy.events import EventDataFrame
 
 event_df = EventDataFrame()
 event_df.add_signal(signal)
@@ -117,7 +120,7 @@ event_df.save('data/events.h5')
 ````
 
 First, an EventDataFrame object have to be created. To analyze signals, the signals have to be added to the 
-EventDataFrame object. Alternatively, it is possible to set a complete SNAADataset as source for analysing with 
+EventDataFrame object. Alternatively, it is possible to set a complete SNADataset as source for analysing with 
 the `set_dataset` method. By calling the `search` method, the added signals will be analyzed with the *slope* algorithm.
 The event dataframe can be accessed via die attribute `data`. EventDataFrame objects can be saved. The resulting hdf 
 file contains the dataframe with the event data and the signals. Thus, the saved file contains all needed information. 

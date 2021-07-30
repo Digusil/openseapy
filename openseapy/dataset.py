@@ -5,11 +5,11 @@ import pandas as pd
 from .signals import SingleSignal
 
 
-class SNAADataset:
+class SNADataset:
     def __init__(self, hdf_file, step=1, smoother=None):
         """
-        Database class for SNAA. To create a new dataset use:
-            SNAADataset.new(hdf_file)
+        Database class for Spontaneous Neuron Answers. To create a new dataset use:
+            SNADataset.new(hdf_file)
 
         Parameters
         ----------
@@ -247,7 +247,7 @@ class SNAADataset:
 
         Returns
         -------
-        dataset object: SNAADataset
+        dataset object: SNADataset
         """
 
         if additional_primary_attributes is None:
