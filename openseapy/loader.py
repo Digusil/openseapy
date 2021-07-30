@@ -4,7 +4,7 @@ import numpy as np
 import scipy.io as sio
 
 import pandas as pd
-from snaa.dataset import SNAADataset
+from openseapy.dataset import SNADataset
 
 
 class CoreLoader:
@@ -156,7 +156,7 @@ def collect_data(loader, sources_dict, target_file, append=False):
 
     Returns
     -------
-    SNAADataset
+    SNADataset
     """
 
     config_columns = sources_dict[next(iter(sources_dict))].keys()
@@ -190,4 +190,4 @@ def collect_data(loader, sources_dict, target_file, append=False):
     file_registration.to_hdf(target_file, key='data_registration')
     trace_registration.to_hdf(target_file, key='trace_registration')
 
-    return SNAADataset(target_file)
+    return SNADataset(target_file)

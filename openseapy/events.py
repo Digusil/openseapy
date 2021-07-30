@@ -211,17 +211,17 @@ class SpontaneousActivityEvent(Event):
 class EventDataFrame(OrigEventDataFrame):
     def __init__(self, *args, **kwargs):
         """
-        Extend EventDataFrame from eventsearch with the probability to add complete SNAADatasets as data.
+        Extend EventDataFrame from eventsearch with the probability to add complete SNADatasets as data.
         """
         super(EventDataFrame, self).__init__(*args, **kwargs)
 
     def set_dataset(self, dataset):
         """
-        Add complete SNAADataset as data.
+        Add complete SNADataset as data.
 
         Parameters
         ----------
-        dataset: SNAADataset
+        dataset: SNADataset
         """
         self.data = pd.DataFrame()
         self._signal_dict = dataset

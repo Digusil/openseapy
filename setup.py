@@ -4,7 +4,7 @@
 from setuptools import setup, find_packages
 
 version = {}
-with open("snaa/version.py") as fp:
+with open("openseapy/version.py") as fp:
     exec(fp.read(), version)
 
 __author__ = 'Thomas Pircher'
@@ -33,7 +33,7 @@ def get_readme():
 #   Call setup method to define this package
 # ------------------------------------------------------------------------------
 setup(
-    name='snaa',
+    name='opensSEApy',
     version=__version__,
     author=__author__,
     author_email=__email__,
@@ -42,7 +42,7 @@ setup(
     url='https://github.com/digusil/snaa',
     license=__license__,
     keywords=[
-        'SNAA',
+        'openseapy',
         'spontaneous neuron activity',
         'patch clamp analysis',
         'eventsearch',

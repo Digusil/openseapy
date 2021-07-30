@@ -2,7 +2,7 @@ import os
 from zipfile import ZipFile
 
 import h5py
-from snaa.ml.autoclassifier_tools import MimicHDFFile
+from openseapy.ml.autoclassifier_tools import MimicHDFFile
 from tensorflow.keras.models import Model, load_model
 
 
