@@ -31,6 +31,9 @@ class CoreLoader:
         self.use_generic_trace_id = use_generic_trace_id
 
     def _load(self, source_file):
+        """
+        yields a tuple of pandas series as data and a meta data dictionary.
+        """
         pass
 
     def __call__(self, source_file):
@@ -88,7 +91,7 @@ class HekaMatLoader(CoreLoader):
                 else:
                     name = primary_name + '/' + trace_name + '/r{:03d}'.format(idr)
 
-                yield pd.Series(row * self.amplify, index=time, name=name)
+                yield pd.Series(row * self.amplify, index=time, name=name), {}
 
 
 class CSVLoader(CoreLoader):
@@ -136,7 +139,7 @@ class CSVLoader(CoreLoader):
 
             name = primary_name + '/t{:03d}'.format(0) + '/r{:03d}'.format(idr)
 
-            yield pd.Series(row * self.amplify, index=time, name=name)
+            yield pd.Series(row * self.amplify, index=time, name=name), {}
 
 
 class ABFLoader(CoreLoader):
@@ -187,7 +190,7 @@ class ABFLoader(CoreLoader):
 
                 name = primary_name + '/t{:03d}'.format(sweep_number) + '/r{:03d}'.format(channel_number)
 
-                yield pd.Series(y * self.amplify, index=time, name=name)
+                yield pd.Series(y * self.amplify, index=time, name=name), {}
 
 
 def collect_data(loader, sources_dict, target_file, append=False):
@@ -222,9 +225,14 @@ def collect_data(loader, sources_dict, target_file, append=False):
 
         file_registration.loc[primary_name] = [filename, folder, *list(config.values())]
 
-        for series in loader(source_file):
+        for series, meta in loader(source_file):
             series_name = series.name
-            trace_registration.loc[series_name] = [primary_name]
+            #trace_registration.loc[series_name] = [primary_name]
+
+            meta.update({'primary_name': primary_name})
+
+            row_df = pd.DataFrame(meta, index=[series_name])
+            trace_registration = trace_registration.append(row_df)
 
             series.to_hdf(target_file, key='series/' + series_name)
 

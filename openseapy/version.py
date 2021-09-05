@@ -36,5 +36,9 @@ CHANGE LOG:
         universal autoclassifier interpreter function
         autoclassifier class
 
+    - 0.1.5a1
+        add ABFLoader class
+        Loader classes can pass meta date of the loaded file to the data collector
+
 """
-__version__ = '0.1.4'
+__version__ = '0.1.5a1'
