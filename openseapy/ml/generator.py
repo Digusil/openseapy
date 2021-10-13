@@ -475,7 +475,7 @@ class SNADataset(CoreDataset):
             self,
             sample_number=None,
             scaler=lambda x, y: [x - np.mean(x), y - np.mean(x)],
-            trace_scaler=QuantileScaler(0.1, 0.9)
+            trace_scaler=lambda x: QuantileScaler(0.1, 0.9).fit_transform(x)
     ):
         """
         Generator function for tfdata.
@@ -487,7 +487,7 @@ class SNADataset(CoreDataset):
         scaler: callable, optional
             Scaling for feature and target (return as tuple). Default is lambda x, y: [x-np.mean(x), y-np.mean(x)].
         trace_scaler: callable, optional
-            Trace data scaling. Default is QuantileScaler(0.1, 0.9).
+            Trace data scaling. Default is lambda x: QuantileScaler(0.1, 0.9).fit_transform(x).
         """
         if isinstance(sample_number, list) or isinstance(sample_number, Iterable):
             position_list = sample_number
@@ -511,7 +511,7 @@ class SNADataset(CoreDataset):
 
                 data -= baseline
 
-                data = trace_scaler.fit_transform(data)
+                data = trace_scaler(data)
 
             features = copy(data.iloc[idn:idn + self.feature_sample_length].values)
             # feature_offset = np.mean(features)
