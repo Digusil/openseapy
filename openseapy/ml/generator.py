@@ -511,7 +511,7 @@ class SNADataset(CoreDataset):
 
                 data -= baseline
 
-                data = QuantileScaler.fit_transform(data)
+                data = trace_scaler.fit_transform(data)
 
             features = copy(data.iloc[idn:idn + self.feature_sample_length].values)
             # feature_offset = np.mean(features)
