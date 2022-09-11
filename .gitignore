@@ -46,7 +46,7 @@
 # common data files
 *.gz
 *.zip
-*.h5
+#*.h5
 *.npy
 *.mat
 *.pkl
