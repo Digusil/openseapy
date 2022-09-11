@@ -8,7 +8,7 @@
 Currently, the package is only available on github. To run the **openSEApy** package, the [**eventsearch**](https://github.com/digusil/eventsearch) is required.
 ```shell
 git clone https://github.com/digusil/eventsearch
-cd eventsearch && pyhton setup.py install
+cd eventsearch && python setup.py install
 ```
 
 If the eventsearch source is cloned into the snaa source, the testing will fail, because the imports in the 'eventesearch/tests/' will not be resolved properly. To prevent this use separate source folders or delete the 'eventesearch/tests/' folder. 
@@ -27,7 +27,7 @@ Recommended folder structure:
 After installing the **eventsearch** package, you can install the **openSEApy** package. 
 ```shell
 git clone https://github.com/digusil/snaa
-cd snaa && pyhton setup.py
+cd snaa && python setup.py install
 ```
 
 ### Testing
@@ -51,6 +51,7 @@ csv-files.
 from openseapy.loader import CSVLoader
 from openseapy.signals import SingleSignal
 
+
 series = next(CSVLoader(time_row=0)('a_file.csv'))
 t = series.index
 y = series.values
@@ -69,6 +70,7 @@ registration of the signal can be deactivated with the parameter `listed=False`.
 
 ```python
 from openseapy.loader import CSVLoader, collect_data
+
 
 loader = CSVLoader(amplify=1e15, time_row=0, sample_rate=50e3)
 
@@ -111,6 +113,7 @@ tfdata instance that can directly be used for training and validation.
 
 ````python
 from openseapy.events import EventDataFrame
+
 
 event_df = EventDataFrame()
 event_df.add_signal(signal)
@@ -214,8 +217,102 @@ The following table shows the calculated parameter of the event of the figure.
 | fitted_cap_status                        |          0.0 |
 | integral                                 |    -0.221727 |
 
+## *Autoclassifier*
+![Autoclassifier schemata](images/autoclassifier.png)
+
+The *Autoclassifier* is an extension of the autoencoder principle. Instead of decoding the data back to the time domain, 
+the *Autoclassifier* classifies the latent domain of the encoder. Equal to an autoencoder, the *Autoclassifier* has to 
+be build from two models. I recommend to train your own models, but a set of sample models is nested in the ml 
+subpackage. Further information 
+- how the *Autoclassifier* have to be trained and 
+- how the *Autoclassicier* works
+
+can be found in the preprint on [bioRxiv.org](https://www.biorxiv.org/content/10.1101/2021.11.09.467896v1). A reviewed 
+version will be published soon.
+
+The following code shows how the *Autoclassifier* can be used:
+```python
+import os
+import numpy as np
+
+import tensorflow as tf
+from tensorflow.keras.models import Model, load_model
+
+from openseapy.ml.generator import SNADataset
+from openseapy.ml.autoclassifier_tools import analyse_autoclassifier
+
+
+# building utilities 
+coding_length = 128
+
+class AutoClassifier(Model):
+    def __init__(self, encoder, classifier):
+        super(AutoClassifier, self).__init__()
+
+        self.encoder = encoder
+        self.classifier = classifier
+
+        assert self.encoder._distribution_strategy is self.classifier._distribution_strategy
+        self._distribution_strategy = self.encoder._distribution_strategy
+
+        assert self.encoder._run_eagerly is self.classifier._run_eagerly
+        self._run_eagerly = self.encoder._run_eagerly
+
+    def call(self, x):
+        encoded = self.encoder(x)
+        classified = self.classifier(encoded)
+
+        return classified
+
+    def save(self, base_name, *args, **kwargs):
+        filename, file_extension = os.path.splitext(base_name)
+        encoder_file = filename + '_encoder' + file_extension
+        classifier_file = filename + '_classifier' + file_extension
+
+        self.encoder.save(encoder_file, *args, **kwargs)
+        self.classifier.save(classifier_file, *args, **kwargs)
+
+    @classmethod
+    def load(cls, encoder_path, classifier_path, *args, **kwargs):
+        encoder = load_model(encoder_path, *args, **kwargs)
+        classifier = load_model(classifier_path, *args, **kwargs)           
+
+        return cls(encoder=encoder, classifier=classifier)
+
+# load models and data 
+autoclassifier = AutoClassifier.load(
+    encoder_path='./ml/models/model_{}_encoder.h5'.format(coding_length), 
+    classifier_path='./ml/models/model_{}_classifier.h5'.format(coding_length))
+
+data = SNADataset.build(
+    'data/collected_data.h5', 
+    feature_length=coding_length, 
+    target_length=coding_length
+)
+
+# build tfdata 
+tfdata = tf.data.Dataset.from_generator(
+    lambda: data.sequence_generator(),
+    output_types=(tf.float32, tf.float32),
+    output_shapes=((coding_length, 1),(coding_length, 1))
+).cache()
+
+# calculating the state signal and detecting the events
+ac_data = np.argmax(autoclassifier.predict(tfdata.batch(1)), axis=1)
+
+tmp_nans = np.empty(64)
+tmp_nans.fill(np.NaN)
+
+autoclassifier_data = np.concatenate((tmp_nans, ac_data, tmp_nans))
+
+ac_events, ac_event_numbers = analyse_autoclassifier(autoclassifier_data)
+```
+
+The event parameter can be calculated by the *EventDataFrame* class. But instead of searching with an algorithm, the 
+*ac_event_numbers* is an event mask and can be analysed by `event_df.check_event_mask(ac_event_numbers)`.
+
 ## Acknowledgement
-This software was developed on the [institute for process machinery](https://www.ipat.tf.fau.eu) in cooperation with the [institute for animal physiology](https://www.tierphys.nat.fau.de). 
+This software was developed on the [institute for process machinery](https://www.ipat.tf.fau.eu) in cooperation with the [institute for animal physiology](https://www.tierphys.nat.fau.de).
 
 ## License
 [Apache License 2.0](LICENSE.txt)

@@ -43,7 +43,11 @@ class TestHekaMatLoader(TestCaseWithTemporaryFolder):
     def test_load_mat_file_without_time_row(self):
         loader = HekaMatLoader(sample_rate=1, amplify=1)
 
-        test_data = list(loader(next(iter(self.sources_dict))))
+        test_data = []
+
+        for case in loader(next(iter(self.sources_dict))):
+            data, meta = case
+            test_data.append(data)
 
         true_data = None
         for trace in self.data:
@@ -57,7 +61,11 @@ class TestHekaMatLoader(TestCaseWithTemporaryFolder):
     def test_load_mat_file_with_time_row(self):
         loader = HekaMatLoader(amplify=1, time_row=0)
 
-        test_data = list(loader(next(iter(self.sources_dict))))
+        test_data = []
+
+        for case in loader(next(iter(self.sources_dict))):
+            data, meta = case
+            test_data.append(data)
 
         true_data = None
         for trace in self.data:

@@ -31,6 +31,9 @@ class CoreLoader:
         self.use_generic_trace_id = use_generic_trace_id
 
     def _load(self, source_file):
+        """
+        yields a tuple of pandas series as data and a meta data dictionary.
+        """
         pass
 
     def __call__(self, source_file):
@@ -88,7 +91,7 @@ class HekaMatLoader(CoreLoader):
                 else:
                     name = primary_name + '/' + trace_name + '/r{:03d}'.format(idr)
 
-                yield pd.Series(row * self.amplify, index=time, name=name)
+                yield pd.Series(row * self.amplify, index=time, name=name), {}
 
 
 class CSVLoader(CoreLoader):
@@ -136,7 +139,58 @@ class CSVLoader(CoreLoader):
 
             name = primary_name + '/t{:03d}'.format(0) + '/r{:03d}'.format(idr)
 
-            yield pd.Series(row * self.amplify, index=time, name=name)
+            yield pd.Series(row * self.amplify, index=time, name=name), {}
+
+
+class ABFLoader(CoreLoader):
+    """
+    Loader class for ABF data.
+    """
+
+    def __init__(self, *args, amplify=1, **kwargs):
+        """
+        Parameters
+        ----------
+        amplify: flout, optional
+            Factor to amplify signal values. Default is 1.
+        sample_rate: float or None, optional
+            Sample rate of the data. If None, a time vector cannot be created or proofed. Default is None.
+        """
+        super(ABFLoader, self).__init__(*args, amplify, **kwargs)
+
+        if self.use_generic_trace_id is not True:
+            raise ValueError('ABFLoader do not support non generic trace ids!')
+
+        if self.time_row is not None:
+            raise ValueError('ABFLoader do not support time row ids!')
+
+    def _load(self, source_file, **kwargs):
+        folder, filename = os.path.split(source_file)
+        primary_name = os.path.splitext(filename)[0]
+
+        try:
+            import pyabf
+        except ImportError:
+            raise ImportError('`ABFLoader` requires pyabf.')
+
+        abf = pyabf.ABF(source_file)
+
+        for sweep_number in abf.sweepList:
+            for channel_number in abf.channelList:
+                abf.setSweep(sweepNumber=sweep_number, channel=channel_number)
+
+                y = abf.sweepY
+                time = abf.sweepX
+
+                fs_file = np.median(1 / np.diff(time))
+
+                if self.sample_rate is not None:
+                    assert 0.01 > np.abs(fs_file / self.sample_rate - 1), \
+                        "Problem with sample rate: {0:} != {1:}".format(self.sample_rate, fs_file)
+
+                name = primary_name + '/t{:03d}'.format(sweep_number) + '/r{:03d}'.format(channel_number)
+
+                yield pd.Series(y * self.amplify, index=time, name=name), {}
 
 
 def collect_data(loader, sources_dict, target_file, append=False):
@@ -171,9 +225,14 @@ def collect_data(loader, sources_dict, target_file, append=False):
 
         file_registration.loc[primary_name] = [filename, folder, *list(config.values())]
 
-        for series in loader(source_file):
+        for series, meta in loader(source_file):
             series_name = series.name
-            trace_registration.loc[series_name] = [primary_name]
+            #trace_registration.loc[series_name] = [primary_name]
+
+            meta.update({'primary_name': primary_name})
+
+            row_df = pd.DataFrame(meta, index=[series_name])
+            trace_registration = trace_registration.append(row_df)
 
             series.to_hdf(target_file, key='series/' + series_name)
 
